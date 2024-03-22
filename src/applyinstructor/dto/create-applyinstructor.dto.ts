@@ -12,4 +12,4 @@ export class CreateApplyinstructorDto {
   email: string;
 
 
-}
+} 

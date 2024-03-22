@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateApplyinstructorDto } from './dto/create-applyinstructor.dto';
 import { UpdateApplyinstructorDto } from './dto/update-applyinstructor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,10 +25,15 @@ export class ApplyinstructorService {
     return `This action returns a #${id} applyinstructor`;
   }
 
-  update(id: number, updateApplyinstructorDto: UpdateApplyinstructorDto) {
-    return `This action updates a #${id} applyinstructor`;
-  }
 
+  async update(id: number, updateApplyinstructorDto: UpdateApplyinstructorDto): Promise<void> {
+    const applyinstructor = await this.applyinstructorRepo.findOne({ where: { id: id } });
+ 
+    if (!applyinstructor) {
+      throw new NotFoundException(' not found');
+    }
+    await this.applyinstructorRepo.update(applyinstructor.id, updateApplyinstructorDto);
+  }
   remove(id: number) {
     return `This action removes a #${id} applyinstructor`;
   }

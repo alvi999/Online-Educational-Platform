@@ -3,6 +3,7 @@ import { ApplyinstructorService } from './applyinstructor.service';
 import { CreateApplyinstructorDto } from './dto/create-applyinstructor.dto';
 import { UpdateApplyinstructorDto } from './dto/update-applyinstructor.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterError, diskStorage } from 'multer';
 
 @Controller('applyinstructor')
 
@@ -16,8 +17,25 @@ export class ApplyinstructorController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file')) 
-  uploadFile(@UploadedFile() file) {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (req, file, cb) => {
+        if (file.originalname.match(/\.(jpg|webp|png|jpeg)$/)) {
+          cb(null, true);
+        } else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false);
+        }
+      },
+      limits: { fileSize: 300000 },
+      storage: diskStorage({
+        destination: './uploads/profilePic',
+        filename: (req, file, cb) => {
+          cb(null, Date.now() + file.originalname);
+        },
+      }),
+    }),
+  ) 
+  uploadFile(@UploadedFile() file:Express.Multer.File) {
     console.log(file);
     return { message: "File Upload", file: file.filename };
   }
@@ -32,11 +50,16 @@ export class ApplyinstructorController {
     return await this.applyinstructorService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateApplyinstructorDto: UpdateApplyinstructorDto) {
-    return this.applyinstructorService.update(+id, updateApplyinstructorDto);
-  }
+ 
 
+  @Patch(':id')
+  async update(
+  @Param('id') id: number,
+  @Body() updateApplyinstructorDto: UpdateApplyinstructorDto,
+) {
+  await this.applyinstructorService.update(id, updateApplyinstructorDto);
+  return { message: 'Instructor details updated successfully' };
+}
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.applyinstructorService.remove(+id);

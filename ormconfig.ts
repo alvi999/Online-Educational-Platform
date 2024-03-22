@@ -1,4 +1,4 @@
-
+import{AllUsers} from './src/entities/all-user.entity';
 import { Applyinstructor } from './src/entities/applyinstructor.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
@@ -9,7 +9,7 @@ const config: PostgresConnectionOptions = {
   port: 5432,
   username: 'postgres',
   password: 'admin',
-  entities: [Applyinstructor],
+  entities: [Applyinstructor,AllUsers],
   synchronize: true,
 };
 
