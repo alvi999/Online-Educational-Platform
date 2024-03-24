@@ -9,8 +9,12 @@ export class AuthController {
 
   @Post('login')
   async login(@Request() req) {
-    return this.authService.login(req.body);
+   
+    const user = await this.authService.login(req.body);
+    if (user) {
+      return { message: 'Login successful', user };
+    } else {
+      return { message: 'Invalid username or password' }; 
+    }
   }
-  
-  
 }

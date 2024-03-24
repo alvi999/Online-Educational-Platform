@@ -18,8 +18,10 @@ export class AllUsersController {
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() createAllUserDto: CreateAllUserDto) {
     return await this.allUsersService.create(createAllUserDto);
+    
   }
 
+  
   @Get('all-users')
   findAll() {
     return this.allUsersService.findAll();
@@ -29,23 +31,49 @@ export class AllUsersController {
   @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
     return this.allUsersService.findOne(+id);
-  }
+  } 
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAllUserDto: UpdateAllUserDto) {
     return this.allUsersService.update(+id, updateAllUserDto);
   }
   @Get('Admin/applyinstructor/all')
+  @UseGuards(AuthGuard)
   ApplyInstructor() { 
   return this.allUsersService.ApplyInstructor();
-}
+  } 
+  @Get('Admin/coursereview/all')
+  Coursereview() { 
+  return this.allUsersService.Coursereview();
+  } 
+  @Get('Admin/newcourse/all')
+  Newcourse() { 
+  return this.allUsersService.Newcourse();
+  } 
+
+  @Get('Instructor/forum/all')
+  forum() { 
+  return this.allUsersService.Forum();
+  }
 
 @Patch('Admin/applyinstructor/:id')
   approveApplyInstructor(@Param('id') id: number) { 
   return this.allUsersService.approveApplyInstructor(id);
 }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.allUsersService.remove(+id);
+
+@Patch('Admin/newcourse/:id')
+  approveNewcourse(@Param('id') id: number) { 
+  return this.allUsersService.approveNewcourse(id);
+}
+
+
+  @Delete('Admin/coursereview/:id')
+  removecoursereview(@Param('id') id: string) {
+    return this.allUsersService.removecoursereview(+id);
+  }
+
+  @Delete('Admin/newcourse/:email')
+  removenewcourse(@Param('email') email: string) {
+    return this.allUsersService.removenewcourse(email);
   }
 }
